@@ -1,0 +1,438 @@
+/*------------------------------------*\
+    $DUCKY-GRIDS
+\*------------------------------------*/
+/**
+ * CONTENTS.............You’re reading it :)
+ * INTRO................Introducing the ducky grid system.
+ * VARIABLES............Your settings/configuration.
+ * FUNCTIONS............Library functions used to build the grid system.
+ * MIXINS...............Library mixins used to build the grid system.
+ * THE GRID.............Setup our grid’s structure.
+ * WIDTHS...............Setup our responsive widths for our chosen breakpoints.
+ * PUSH.................Our push classes.
+ * PULL.................Our pull classes.
+ */
+
+
+
+
+
+/*------------------------------------*\
+    $INTRO
+\*------------------------------------*/
+/**
+ * This is an introduction to ducky grids
+ */
+
+
+
+
+
+/*------------------------------------*\
+    $VARIABLES
+\*------------------------------------*/
+/**
+ * Set the maximum width of your page content including gutter.
+ *
+ * The `960px` default value comes from the fact the most common screen width
+ * we should be targeting is 1024px and 960px in particaular is divisible by
+ * the factors of 1, 2, 3, 4, 5, 6, 8, 10, 12, 15, and 16; that’s a lot of
+ * factors!
+ *
+ * If you’re not convinced, feel free to change this setting to whatever you
+ * wish e.g. `1200px` or whatever :)
+ */
+$max-width:             960px !default;
+
+
+/**
+ * While I recommend sticking with the default ‘12‘ columns, feel free to change
+ * this variable if you wish to use a different number of colums (I’m looking at
+ * you, 16 column grid people).
+ */
+$columns:               12 !default;
+
+
+/**
+ * Set the spacing between each grid column. The default of ‘24px' is based
+ * around a base font-size of ‘16px‘ with a base line-height of ‘1.5‘ resulting
+ * in a vertical spacing value of ‘24px‘. This maintains consistency with both
+ * vertical and horizontal rhythm.
+ *
+ * This shit gets me hard, really.
+ */
+$gutter:                24px !default;
+
+
+/**
+ * Ducky grids is built with responsive web design in mind but you can still use
+ * it even if you’re building a non-responsive site.
+ */
+$responsive:            true !default;
+
+
+/**
+ * Leaving this setting at its default ’true’ value will make your grids 100%
+ * width if you don’t apply a more specific width class to them.
+ */
+$mobile-first:          true !default;
+
+
+/**
+ * Do you need push and pull classes? They’re useful for moving columns left or
+ * right by a certain number of columns meaning your columns don't have to
+ * appear in the same order as they appear in your markup.
+ */
+$push:                  true !default;
+$pull:                  true !default;
+
+
+/**
+ * Define the prefix used for your classes (e.g. `.sm--col--2`) as well as the
+ * media query that the breakpoint relates to.
+ *
+ * The default values cover what I regard as the most common screen sizes but
+ * feel free to customize them per your own project’s requirements.
+ */
+$breakpoints: (
+ 'xs' '(max-width: 480px)',
+ 'sm' '(min-width: 481px) and (max-width: 768px)',
+ 'md' '(min-width: 769px) and (max-width: 1023px)',
+ 'lg' '(min-width: 1024px)'
+) !default;
+
+
+/**
+ * So you only compile as much CSS as you need you can specify for which
+ * namespaced breakpoints you would like to generate width, push and pull
+ * classes.
+ *
+ * Please note, you can only use push and pull classes if the `$push` and/or
+ * `pull` variable(s) and the `$responsive` variable are set to ’true’.
+ */
+$breakpoint-has-widths: ('xs', 'sm', 'md', 'lg') !default;
+$breakpoint-has-push:   ('xs', 'sm', 'md', 'lg') !default;
+$breakpoint-has-pull:   ('xs', 'sm', 'md', 'lg') !default;
+
+
+
+
+
+/*------------------------------------*\
+    $FUNCTIONS
+\*------------------------------------*/
+/**
+ * This function is only used by the library to build the grid system. It strips
+ * properties passed to it of their units. This is useful for conducting maths
+ * on said property without throwing up an error.
+ */
+@function strip-unit($num) {
+  @if type-of($num) == 'number' and not unitless($num) {
+    @return $num / ($num * 0 + 1);
+  }
+
+  @return $num;
+}
+
+
+
+
+
+/*------------------------------------*\
+    $MIXINS
+\*------------------------------------*/
+/**
+ * These mixins are only used by the library to build our grid system. They will
+ * not output any css and should not be edited unless you you’re a fan of broken
+ * grid systems.
+ *
+ * Enclose a block of code with a media query as named in `$breakpoints`.
+ */
+@mixin grid-media-query($media-query) {
+  $breakpoint-found: false;
+
+  @each $breakpoint in $breakpoints {
+    $name: nth($breakpoint, 1);
+    $declaration: nth($breakpoint, 2);
+
+    @if $media-query == $name and $declaration {
+      $breakpoint-found: true;
+
+      @media only screen and #{$declaration} {
+        @content;
+      }
+    }
+  }
+
+  @if not $breakpoint-found {
+    @warn "Breakpoint ‘#{$media-query}’ does not exist";
+  }
+}
+
+
+/**
+ * Generate a Baseline Grid to aid in development only. Thanks to Mike Morrison
+ * at Soholaunch.com fot this!
+ */
+
+@mixin column-grid {
+  /**
+   * I like the classic pale red but you can change the colour of the columns
+   * to whatever you like. Go crazy.
+   */
+	$cg-column-color:      rgba(200,0,0,.2) !default;
+
+	/**
+   * These variables are automatically calculated. Hands off!
+   */
+  $cg-columns:          $columns;
+  $cg-gutter:           $gutter;
+	$cg-gutters:          ($columns - 1);
+  $cg-gutter-total:     ($cg-gutters * $cg-gutter);
+  $cg-gutter-half:      ($cg-gutter / 2);
+	$cg-column-width:     (($max-width - $cg-gutter) - $cg-gutter-total) / $cg-columns;
+
+  /**
+   * Output our prefixed background image styles
+   * 1. Create a coloured block the width of one column
+   * 2. Create a transparent block the width of our gutter
+   * 3. Set the size of our image equal to one column and its gutter
+   * 4. Offset the image by one half our gutter width which is the amount of
+   *    padding applied to either side of our `container`
+   */
+  background-image: -webkit-linear-gradient(
+    0deg,
+    $cg-column-color $cg-column-width,                     /* 1 */
+    transparent $cg-gutter                                 /* 2 */
+  );
+
+  background-image: -moz-linear-gradient(
+    0deg,
+    $cg-column-color $cg-column-width,                     /* 1 */
+    transparent $cg-gutter                                 /* 2 */
+  );
+
+  background-image: -o-linear-gradient(
+    0deg,
+    $cg-column-color $cg-column-width,                     /* 1 */
+    transparent $cg-gutter                                 /* 2 */
+  );
+
+  background-size: ($cg-column-width + $cg-gutter) 100%;   /* 3 */
+  background-position: $cg-gutter-half  0px;               /* 4 */
+}
+
+/**
+ * Call that mixin like it ain’t no thang!
+ */
+.container {
+	@include column-grid;
+  body:active & {
+    background: none;
+  }
+}
+
+
+
+/*------------------------------------*\
+  $THE-GRID
+\*------------------------------------*/
+/**
+ * To end up with the amount of gutter you specififed above we need to add half
+ * that amount to either side of our columns. This variable makes the process
+ * a little DRY-er.
+ */
+$gutter-half: (strip-unit($gutter) / 2) * 1px;
+
+
+/**
+ * 1. Align our container to the middle of the page.
+ * 2. Set the container’s maximum width.
+ * 3. Add gutter either side of the container.
+ * 4. So our fluid widths will play nice with our fixed gutters.
+ * 5. Make our container full-width if required.
+ */
+.container {
+  margin-left: auto;               /* [1] */
+  margin-right: auto;              /* [1] */
+  max-width: $max-width;           /* [2] */
+  padding-left: $gutter-half;      /* [3] */
+  padding-right: $gutter-half;     /* [3] */
+  -webkit-box-sizing: border-box;  /* [4] */
+     -moz-box-sizing: border-box;  /* [4] */
+          box-sizing: border-box;  /* [4] */
+}
+.container--fluid {
+  max-width: 100%;                 /* [5] */
+}
+
+
+/**
+ * 1. Allow the grid to be used on lists and list items.
+ * 2. Remove any margin which may affect our grid and add a negative margin of
+ * half the desired gutter amount either side of each grid.
+ * 3. Remove any padding which may affect our grid.
+ * 4. Clear all the floats used in our grid system.
+ */
+.grid {
+  list-style: none;               /* [1] */
+  margin:  0 -$gutter-half;       /* [2] */
+  padding: 0;                     /* [3] */
+
+  &:before,
+  &:after {
+    content: " ";                 /* [4] */
+    display: table;               /* [4] */
+  }
+  &:after {
+    clear: both;                  /* [4] */
+  }
+}
+
+
+/**
+ * 1. Add half your specified gutter to either side of each column.
+ * 2. So our fluid widths will play nice with our fixed gutters.
+ * 3. Make columns full-width by default if `$mobile-first` is `true`.
+ */
+[class^="col--"] {
+  float: left;
+  padding-left:  $gutter-half;     /* [1] */
+  padding-right: $gutter-half;     /* [1] */
+  -webkit-box-sizing: border-box;  /* [2] */
+     -moz-box-sizing: border-box;  /* [2] */
+          box-sizing: border-box;  /* [2] */
+
+  @if $mobile-first {
+    width: 100%;                   /* [3] */
+  }
+}
+
+
+
+
+
+/*------------------------------------*\
+   $WIDTHS
+\*------------------------------------*/
+/**
+ * Non-responsive column width classes.
+ */
+@mixin device-type($namespace:"") {
+  $prefix: unquote(".") + "col--" + $namespace;
+
+  @for $i from 1 through $columns {
+    $num: $i;
+    $percent: 100% / ($columns / $num);
+
+    #{$prefix}#{$num} {
+      width: $percent;
+    }
+
+  }
+
+}
+
+@include device-type;
+
+
+/**
+ * Responsive column width classes, if enabled.
+ */
+@if $responsive {
+
+  @each $name in $breakpoint-has-widths {
+    @include grid-media-query($name) {
+      @include device-type('#{$name}--');
+    }
+  }
+
+}
+
+
+
+
+
+/*------------------------------------*\
+   $PUSH
+\*------------------------------------*/
+/**
+ * Push classes (if enabled) to move columns to the right by a certain number of
+ * columns.
+ */
+@mixin push-setup($namespace:"") {
+  $prefix: unquote(".") + "push--" + $namespace;
+
+  @for $i from 1 through $columns {
+    $num: $i;
+    $percent: 100% / ($columns / $num);
+
+    #{$prefix}#{$num} {
+      left: $percent;
+    }
+
+  }
+
+}
+
+@if $push {
+
+  [class*="push--"] { position: relative; }
+
+  @include push-setup;
+
+  @if $responsive {
+
+    @each $name in $breakpoint-has-push {
+      @include grid-media-query($name) {
+        @include device-type('#{$name}--');
+      }
+    }
+
+  }
+
+}
+
+
+
+
+
+/*------------------------------------*\
+   $PULL
+\*------------------------------------*/
+/**
+ * Pull classes (if enabled) to move columns to the left by a certain number of
+ * columns.
+ */
+@mixin pull-setup($namespace:"") {
+  $prefix: unquote(".") + "pull--" + $namespace;
+
+  @for $i from 1 through $columns {
+    $num: $i;
+    $percent: 100% / ($columns / $num);
+
+    #{$prefix}#{$num} {
+      right: $percent;
+    }
+
+  }
+
+}
+
+@if $pull {
+
+  [class*="pull--"] { position: relative; }
+
+  @include pull-setup;
+
+  @if $responsive {
+
+    @each $name in $breakpoint-has-pull {
+      @include grid-media-query($name) {
+        @include device-type('#{$name}--');
+      }
+    }
+
+  }
+
+}

@@ -1,0 +1,19 @@
+{
+  "name": "ducky-grids",
+  "version": "1.0.0",
+  "homepage": "https://github.com/adamduckett/ducky-grids",
+  "authors": [
+    "Adam Duckett <adammichaelduckett@gmail.com>"
+  ],
+  "description": "A simple Sass-based responsive grid system.",
+  "main": "ducky-grids.scss",
+  "keywords": [
+    "ducky",
+    "grids",
+    "layout",
+    "responsive",
+    "grid",
+    "system"
+  ],
+  "license": "Apache"
+}
