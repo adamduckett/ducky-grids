@@ -42,7 +42,7 @@
  * If you’re not convinced, feel free to change this setting to whatever you
  * wish e.g. `1200px` or whatever :)
  */
-$max-width:             960px !default;
+$dky-max-width:             960px !default;
 
 
 /**
@@ -50,7 +50,7 @@ $max-width:             960px !default;
  * this variable if you wish to use a different number of colums (I’m looking at
  * you, 16 column grid people).
  */
-$columns:               12 !default;
+$dky-columns:               12 !default;
 
 
 /**
@@ -61,21 +61,21 @@ $columns:               12 !default;
  *
  * This shit gets me hard, really.
  */
-$gutter:                24px !default;
+$dky-gutter:                24px !default;
 
 
 /**
  * Ducky grids is built with responsive web design in mind but you can still use
  * it even if you’re building a non-responsive site.
  */
-$responsive:            true !default;
+$dky-responsive:            true !default;
 
 
 /**
  * Leaving this setting at its default ’true’ value will make your grids 100%
  * width if you don’t apply a more specific width class to them.
  */
-$mobile-first:          true !default;
+$dky-mobile-first:          true !default;
 
 
 /**
@@ -83,8 +83,8 @@ $mobile-first:          true !default;
  * right by a certain number of columns meaning your columns don't have to
  * appear in the same order as they appear in your markup.
  */
-$push:                  true !default;
-$pull:                  true !default;
+$dky-push:                  true !default;
+$dky-pull:                  true !default;
 
 
 /**
@@ -94,7 +94,7 @@ $pull:                  true !default;
  * The default values cover what I regard as the most common screen sizes but
  * feel free to customize them per your own project’s requirements.
  */
-$breakpoints: (
+$dky-breakpoints: (
  'xs' '(max-width: 480px)',
  'sm' '(min-width: 481px) and (max-width: 768px)',
  'md' '(min-width: 769px) and (max-width: 1023px)',
@@ -107,12 +107,20 @@ $breakpoints: (
  * namespaced breakpoints you would like to generate width, push and pull
  * classes.
  *
- * Please note, you can only use push and pull classes if the `$push` and/or
- * `pull` variable(s) and the `$responsive` variable are set to ’true’.
+ * Please note, you can only use push and pull classes if the `$dky-push` and/or
+ * `pull` variable(s) and the `$dky-responsive` variable are set to ’true’.
  */
-$breakpoint-has-widths: ('xs', 'sm', 'md', 'lg') !default;
-$breakpoint-has-push:   ('xs', 'sm', 'md', 'lg') !default;
-$breakpoint-has-pull:   ('xs', 'sm', 'md', 'lg') !default;
+$dky-breakpoint-has-widths: ('xs', 'sm', 'md', 'lg') !default;
+$dky-breakpoint-has-push:   ('xs', 'sm', 'md', 'lg') !default;
+$dky-breakpoint-has-pull:   ('xs', 'sm', 'md', 'lg') !default;
+
+
+/**
+ * Because I’m awesome, Ducky grids includes column guides in the form of a
+ * background image. While I think they make development easier some people
+ * think they get in the way so this setting is toggled `false` by default.
+ */
+$dky-guides:                true !default;
 
 
 
@@ -146,26 +154,26 @@ $breakpoint-has-pull:   ('xs', 'sm', 'md', 'lg') !default;
  * not output any css and should not be edited unless you you’re a fan of broken
  * grid systems.
  *
- * Enclose a block of code with a media query as named in `$breakpoints`.
+ * Enclose a block of code with a media query as named in `$dky-breakpoints`.
  */
-@mixin grid-media-query($media-query) {
-  $breakpoint-found: false;
+@mixin grid-media-query($dky-media-query) {
+  $dky-breakpoint-found: false;
 
-  @each $breakpoint in $breakpoints {
-    $name: nth($breakpoint, 1);
-    $declaration: nth($breakpoint, 2);
+  @each $dky-breakpoint in $dky-breakpoints {
+    $dky-name: nth($dky-breakpoint, 1);
+    $dky-declaration: nth($dky-breakpoint, 2);
 
-    @if $media-query == $name and $declaration {
-      $breakpoint-found: true;
+    @if $dky-media-query == $dky-name and $dky-declaration {
+      $dky-breakpoint-found: true;
 
-      @media only screen and #{$declaration} {
+      @media only screen and #{$dky-declaration} {
         @content;
       }
     }
   }
 
-  @if not $breakpoint-found {
-    @warn "Breakpoint ‘#{$media-query}’ does not exist";
+  @if not $dky-breakpoint-found {
+    @warn "Breakpoint ‘#{$dky-media-query}’ does not exist";
   }
 }
 
@@ -180,17 +188,15 @@ $breakpoint-has-pull:   ('xs', 'sm', 'md', 'lg') !default;
    * I like the classic pale red but you can change the colour of the columns
    * to whatever you like. Go crazy.
    */
-	$cg-column-color:      rgba(200,0,0,.2) !default;
+	$dky-column-color:      rgba(200,0,0,.2) !default;
 
 	/**
    * These variables are automatically calculated. Hands off!
    */
-  $cg-columns:          $columns;
-  $cg-gutter:           $gutter;
-	$cg-gutters:          ($columns - 1);
-  $cg-gutter-total:     ($cg-gutters * $cg-gutter);
-  $cg-gutter-half:      ($cg-gutter / 2);
-	$cg-column-width:     (($max-width - $cg-gutter) - $cg-gutter-total) / $cg-columns;
+	$dky-gutters:          ($dky-columns - 1);
+  $dky-gutter-total:     ($dky-gutters * $dky-gutter);
+  $dky-gutter-half:      ($dky-gutter / 2);
+	$dky-column-width:     (($dky-max-width - $dky-gutter) - $dky-gutter-total) / $dky-columns;
 
   /**
    * Output our prefixed background image styles
@@ -202,35 +208,27 @@ $breakpoint-has-pull:   ('xs', 'sm', 'md', 'lg') !default;
    */
   background-image: -webkit-linear-gradient(
     0deg,
-    $cg-column-color $cg-column-width,                     /* 1 */
-    transparent $cg-gutter                                 /* 2 */
+    $dky-column-color $dky-column-width,                    /* 1 */
+    transparent $dky-gutter                                 /* 2 */
   );
 
   background-image: -moz-linear-gradient(
     0deg,
-    $cg-column-color $cg-column-width,                     /* 1 */
-    transparent $cg-gutter                                 /* 2 */
+    $dky-column-color $dky-column-width,                    /* 1 */
+    transparent $dky-gutter                                 /* 2 */
   );
 
   background-image: -o-linear-gradient(
     0deg,
-    $cg-column-color $cg-column-width,                     /* 1 */
-    transparent $cg-gutter                                 /* 2 */
+    $dky-column-color $dky-column-width,                    /* 1 */
+    transparent $dky-gutter                                 /* 2 */
   );
 
-  background-size: ($cg-column-width + $cg-gutter) 100%;   /* 3 */
-  background-position: $cg-gutter-half  0px;               /* 4 */
+  background-size: ($dky-column-width + $dky-gutter) 100%;  /* 3 */
+  background-position: $dky-gutter-half  0px;               /* 4 */
 }
 
-/**
- * Call that mixin like it ain’t no thang!
- */
-.container {
-	@include column-grid;
-  body:active & {
-    background: none;
-  }
-}
+
 
 
 
@@ -242,7 +240,7 @@ $breakpoint-has-pull:   ('xs', 'sm', 'md', 'lg') !default;
  * that amount to either side of our columns. This variable makes the process
  * a little DRY-er.
  */
-$gutter-half: (strip-unit($gutter) / 2) * 1px;
+$dky-gutter-half: (strip-unit($dky-gutter) / 2) * 1px;
 
 
 /**
@@ -250,20 +248,28 @@ $gutter-half: (strip-unit($gutter) / 2) * 1px;
  * 2. Set the container’s maximum width.
  * 3. Add gutter either side of the container.
  * 4. So our fluid widths will play nice with our fixed gutters.
- * 5. Make our container full-width if required.
+ * 5. Add a column guide background image if setting `true`
+ * 6. Toggle background image off by click-holding on `body`
+ * 7. Make our container full-width if required.
  */
 .container {
   margin-left: auto;               /* [1] */
   margin-right: auto;              /* [1] */
-  max-width: $max-width;           /* [2] */
-  padding-left: $gutter-half;      /* [3] */
-  padding-right: $gutter-half;     /* [3] */
+  max-width: $dky-max-width;       /* [2] */
+  padding-left: $dky-gutter-half;  /* [3] */
+  padding-right: $dky-gutter-half; /* [3] */
   -webkit-box-sizing: border-box;  /* [4] */
      -moz-box-sizing: border-box;  /* [4] */
           box-sizing: border-box;  /* [4] */
+  @if $dky-guides {
+    @include column-grid;          /* [5] */
+    body:active & {
+      background: none;            /* [6] */
+    }
+  }
 }
 .container--fluid {
-  max-width: 100%;                 /* [5] */
+  max-width: 100%;                 /* [7] */
 }
 
 
@@ -276,7 +282,7 @@ $gutter-half: (strip-unit($gutter) / 2) * 1px;
  */
 .grid {
   list-style: none;               /* [1] */
-  margin:  0 -$gutter-half;       /* [2] */
+  margin:  0 (-$dky-gutter-half);   /* [2] */
   padding: 0;                     /* [3] */
 
   &:before,
@@ -293,18 +299,75 @@ $gutter-half: (strip-unit($gutter) / 2) * 1px;
 /**
  * 1. Add half your specified gutter to either side of each column.
  * 2. So our fluid widths will play nice with our fixed gutters.
- * 3. Make columns full-width by default if `$mobile-first` is `true`.
+ * 3. Make columns full-width by default if `$dky-mobile-first` is `true`.
  */
+.col,
 [class^="col--"] {
   float: left;
-  padding-left:  $gutter-half;     /* [1] */
-  padding-right: $gutter-half;     /* [1] */
+  padding-left:  $dky-gutter-half; /* [1] */
+  padding-right: $dky-gutter-half; /* [1] */
   -webkit-box-sizing: border-box;  /* [2] */
      -moz-box-sizing: border-box;  /* [2] */
           box-sizing: border-box;  /* [2] */
 
-  @if $mobile-first {
+  @if $dky-mobile-first {
     width: 100%;                   /* [3] */
+  }
+}
+
+
+
+
+
+/**
+ * Create gutterless grids by extending the standard `.grid` class.
+ */
+.grid--flush {
+  margin-left: 0;
+  margin-right: 0;
+
+  > .col,
+  > [class^="col--"] {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+
+
+
+
+/**
+ * Create grids with gutters half the standard size by extending the standard
+ * `.grid` class.
+ */
+.grid--thin {
+  margin-left: -$dky-gutter-half / 2;
+  margin-right: -$dky-gutter-half / 2;
+
+  > .col,
+  > [class^="col--"] {
+    padding-left: $dky-gutter-half / 2;
+    padding-right: $dky-gutter-half / 2;
+  }
+}
+
+
+
+
+
+/**
+ * Create grids with gutters half the standard size by extending the standard
+ * `.grid` class.
+ */
+.grid--fat {
+  margin-left: -$dky-gutter;
+  margin-right: -$dky-gutter;
+
+  > .col,
+  > [class^="col--"] {
+    padding-left: $dky-gutter;
+    padding-right: $dky-gutter;
   }
 }
 
@@ -318,15 +381,15 @@ $gutter-half: (strip-unit($gutter) / 2) * 1px;
 /**
  * Non-responsive column width classes.
  */
-@mixin device-type($namespace:"") {
-  $prefix: unquote(".") + "col--" + $namespace;
+@mixin device-type($dky-namespace:"") {
+  $dky-prefix: unquote(".") + "col--" + $dky-namespace;
 
-  @for $i from 1 through $columns {
+  @for $i from 1 through $dky-columns {
     $num: $i;
-    $percent: 100% / ($columns / $num);
+    $dky-percent: 100% / ($dky-columns / $num);
 
-    #{$prefix}#{$num} {
-      width: $percent;
+    #{$dky-prefix}#{$num} {
+      width: $dky-percent;
     }
 
   }
@@ -339,11 +402,11 @@ $gutter-half: (strip-unit($gutter) / 2) * 1px;
 /**
  * Responsive column width classes, if enabled.
  */
-@if $responsive {
+@if $dky-responsive {
 
-  @each $name in $breakpoint-has-widths {
-    @include grid-media-query($name) {
-      @include device-type('#{$name}--');
+  @each $dky-name in $dky-breakpoint-has-widths {
+    @include grid-media-query($dky-name) {
+      @include device-type('#{$dky-name}--');
     }
   }
 
@@ -360,32 +423,32 @@ $gutter-half: (strip-unit($gutter) / 2) * 1px;
  * Push classes (if enabled) to move columns to the right by a certain number of
  * columns.
  */
-@mixin push-setup($namespace:"") {
-  $prefix: unquote(".") + "push--" + $namespace;
+@mixin push-setup($dky-namespace:"") {
+  $dky-prefix: unquote(".") + "push--" + $dky-namespace;
 
-  @for $i from 1 through $columns {
+  @for $i from 1 through $dky-columns {
     $num: $i;
-    $percent: 100% / ($columns / $num);
+    $dky-percent: 100% / ($dky-columns / $num);
 
-    #{$prefix}#{$num} {
-      left: $percent;
+    #{$dky-prefix}#{$num} {
+      left: $dky-percent;
     }
 
   }
 
 }
 
-@if $push {
+@if $dky-push {
 
   [class*="push--"] { position: relative; }
 
   @include push-setup;
 
-  @if $responsive {
+  @if $dky-responsive {
 
-    @each $name in $breakpoint-has-push {
-      @include grid-media-query($name) {
-        @include device-type('#{$name}--');
+    @each $dky-name in $dky-breakpoint-has-push {
+      @include grid-media-query($dky-name) {
+        @include device-type('#{$dky-name}--');
       }
     }
 
@@ -404,32 +467,32 @@ $gutter-half: (strip-unit($gutter) / 2) * 1px;
  * Pull classes (if enabled) to move columns to the left by a certain number of
  * columns.
  */
-@mixin pull-setup($namespace:"") {
-  $prefix: unquote(".") + "pull--" + $namespace;
+@mixin pull-setup($dky-namespace:"") {
+  $dky-prefix: unquote(".") + "pull--" + $dky-namespace;
 
-  @for $i from 1 through $columns {
+  @for $i from 1 through $dky-columns {
     $num: $i;
-    $percent: 100% / ($columns / $num);
+    $dky-percent: 100% / ($dky-columns / $num);
 
-    #{$prefix}#{$num} {
-      right: $percent;
+    #{$dky-prefix}#{$num} {
+      right: $dky-percent;
     }
 
   }
 
 }
 
-@if $pull {
+@if $dky-pull {
 
   [class*="pull--"] { position: relative; }
 
   @include pull-setup;
 
-  @if $responsive {
+  @if $dky-responsive {
 
-    @each $name in $breakpoint-has-pull {
-      @include grid-media-query($name) {
-        @include device-type('#{$name}--');
+    @each $dky-name in $dky-breakpoint-has-pull {
+      @include grid-media-query($dky-name) {
+        @include device-type('#{$dky-name}--');
       }
     }
 
