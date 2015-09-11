@@ -1,2 +1,2 @@
 # ducky-grids
-A simple Sass-based responsive grid system.
+A simple, responsive, column-based grid system.

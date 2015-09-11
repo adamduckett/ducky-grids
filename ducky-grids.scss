@@ -21,7 +21,25 @@
     $INTRO
 \*------------------------------------*/
 /**
- * This is an introduction to ducky grids
+ * Ducky grids is a simple, responsive, column-based grid system which provides column widths
+ * over a number of breakpoints for the devices you specify. It makes it really
+ * easy to alter your layout on a per-device basis.
+ *
+ * Out of the box, Ducky grids provides the following breakpoints:
+ *
+ * xs -- mobile phones e.g. iPhone (anything under `480px`)
+ * sm -- smaller tablets e.g. Kindle Fire (anything between `481px` and `768px`)
+ * md -- larger tablets e.g. iPad (anything between `769px` and '1024px')
+ * lg -- desktop computers e.g. Mac/PC (anything above '1024px')
+ *
+ * Using the above namespaces you can easily manipulate your layouts based on
+ * the size of device the user is using, for example:
+ *
+   <div clas="col  col--4  col--sm--6  col--xs--12">
+ *
+ * The above would produce a column which spans across 4 columns unless it is
+ * on a small or extra-small device when it would span across 6 or 12 columns,
+ * respectively.
  */
 
 
@@ -301,8 +319,7 @@ $dky-gutter-half: (strip-unit($dky-gutter) / 2) * 1px;
  * 2. So our fluid widths will play nice with our fixed gutters.
  * 3. Make columns full-width by default if `$dky-mobile-first` is `true`.
  */
-.col,
-[class^="col--"] {
+[class^="col"] {
   float: left;
   padding-left:  $dky-gutter-half; /* [1] */
   padding-right: $dky-gutter-half; /* [1] */
@@ -326,8 +343,7 @@ $dky-gutter-half: (strip-unit($dky-gutter) / 2) * 1px;
   margin-left: 0;
   margin-right: 0;
 
-  > .col,
-  > [class^="col--"] {
+  > [class^="col"] {
     padding-left: 0;
     padding-right: 0;
   }
@@ -345,8 +361,7 @@ $dky-gutter-half: (strip-unit($dky-gutter) / 2) * 1px;
   margin-left: -$dky-gutter-half / 2;
   margin-right: -$dky-gutter-half / 2;
 
-  > .col,
-  > [class^="col--"] {
+  > [class^="col"] {
     padding-left: $dky-gutter-half / 2;
     padding-right: $dky-gutter-half / 2;
   }
@@ -364,8 +379,7 @@ $dky-gutter-half: (strip-unit($dky-gutter) / 2) * 1px;
   margin-left: -$dky-gutter;
   margin-right: -$dky-gutter;
 
-  > .col,
-  > [class^="col--"] {
+  > [class^="col"] {
     padding-left: $dky-gutter;
     padding-right: $dky-gutter;
   }
