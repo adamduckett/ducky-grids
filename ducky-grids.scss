@@ -138,7 +138,7 @@ $dky-breakpoint-has-pull:   ('xs', 'sm', 'md', 'lg') !default;
  * background image. While I think they make development easier some people
  * think they get in the way so this setting is toggled `false` by default.
  */
-$dky-guides:                true !default;
+$dky-column-guides:                true !default;
 
 
 
@@ -197,10 +197,9 @@ $dky-guides:                true !default;
 
 
 /**
- * Generate a Baseline Grid to aid in development only. Thanks to Mike Morrison
- * at Soholaunch.com fot this!
+ * Generate a column grid to aid in development only. Thanks to Mike Morrison
+ * at Soholaunch.com for doing the initial legwork on this!
  */
-
 @mixin column-grid {
   /**
    * I like the classic pale red but you can change the colour of the columns
@@ -279,7 +278,7 @@ $dky-gutter-half: (strip-unit($dky-gutter) / 2) * 1px;
   -webkit-box-sizing: border-box;  /* [4] */
      -moz-box-sizing: border-box;  /* [4] */
           box-sizing: border-box;  /* [4] */
-  @if $dky-guides {
+  @if $dky-column-guides {
     @include column-grid;          /* [5] */
     body:active & {
       background: none;            /* [6] */
